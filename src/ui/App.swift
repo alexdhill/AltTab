@@ -121,7 +121,7 @@ class App: AppCenterApplication {
         guard appIsBeingUsed else { return } // already hidden
         let focusedWindow = Windows.focusedWindow()
         Logger.info(focusedWindow?.cgWindowId.map { String(describing: $0) } ?? "nil", focusedWindow?.title ?? "nil", focusedWindow?.application.pid ?? "nil", focusedWindow?.application.bundleIdentifier ?? "nil")
-        hideWindows(Windows.list)
+        hideWindows(Windows.list, focusedWindow)
         focusSelectedWindow(focusedWindow)
     }
 
@@ -191,11 +191,16 @@ class App: AppCenterApplication {
         }
     }
     
-    func hideWindows(_ windows: [Window]?) {
+    func hideWindows(_ windows: [Window]?, _ target: Window?) {
         guard appIsBeingUsed else {return}
-        if let windows = windows, MissionControl.state() == .inactive || MissionControl.state() == .showDesktop && Preferences.hideWindowsOnFocusEnabled {
-            for window in windows {
-                window.application.runningApplication.hide()
+        if let target = target {
+            if let windows = windows, MissionControl.state() == .inactive || MissionControl.state() == .showDesktop && Preferences.hideWindowsOnFocusEnabled {
+                for window in windows {
+                    if (target.cgWindowId != window.cgWindowId) && (window.shouldShowTheUser) {
+                        window.application.runningApplication.hide()
+                        
+                    }
+                }
             }
         }
     }

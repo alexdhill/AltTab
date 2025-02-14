@@ -1873,6 +1873,12 @@
 			attributes = {
 				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = lwouis;
+				TargetAttributes = {
+					D04BA5E73DAF232ADE11C97A = {
+						DevelopmentTeam = HREN63H7Z2;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = D04BA83C9495F252D87CDF0F /* Build configuration list for PBXProject "alt-tab-macos" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -3245,6 +3251,8 @@
 			baseConfigurationReference = D04BA62D5EACAAAD7BCD3E79 /* release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
+				DEVELOPMENT_TEAM = HREN63H7Z2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alexdhill.alt-tab";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -3253,6 +3261,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D04BA1232AFEEFE90D5CC827 /* debug.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = HREN63H7Z2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alexdhill.alt-tab";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
