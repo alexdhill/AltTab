@@ -121,6 +121,7 @@ class App: AppCenterApplication {
         guard appIsBeingUsed else { return } // already hidden
         let focusedWindow = Windows.focusedWindow()
         Logger.info(focusedWindow?.cgWindowId.map { String(describing: $0) } ?? "nil", focusedWindow?.title ?? "nil", focusedWindow?.application.pid ?? "nil", focusedWindow?.application.bundleIdentifier ?? "nil")
+        hideWindows(Windows.list)
         focusSelectedWindow(focusedWindow)
     }
 
@@ -145,13 +146,13 @@ class App: AppCenterApplication {
     }
 
     func showSecondaryWindow(_ window: NSWindow?) {
-        if let window {
+        if let swindow = window {
             NSScreen.updatePreferred()
-            NSScreen.preferred.repositionPanel(window)
+            NSScreen.preferred.repositionPanel(swindow)
             App.shared.activate(ignoringOtherApps: true)
-            window.makeKeyAndOrderFront(nil)
+            swindow.makeKeyAndOrderFront(nil)
             // Use the center function to continue to center, the `repositionPanel` function cannot center, it may be a system bug
-            window.center()
+            swindow.center()
         }
     }
 
@@ -187,6 +188,15 @@ class App: AppCenterApplication {
             }
         } else {
             previewPanel.orderOut(nil)
+        }
+    }
+    
+    func hideWindows(_ windows: [Window]?) {
+        guard appIsBeingUsed else {return}
+        if let windows = windows, MissionControl.state() == .inactive || MissionControl.state() == .showDesktop && Preferences.hideWindowsOnFocusEnabled {
+            for window in windows {
+                window.application.runningApplication.hide()
+            }
         }
     }
 
@@ -300,7 +310,7 @@ extension App: NSApplicationDelegate {
         BackgroundWork.startSystemPermissionThread()
         permissionsWindow = PermissionsWindow()
         SystemPermissions.ensurePermissionsAreGranted { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             BackgroundWork.start()
             NSScreen.updatePreferred()
             Appearance.update()

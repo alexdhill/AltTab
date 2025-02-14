@@ -4,7 +4,7 @@ class Markdown {
     private static let titleAttributes: [NSAttributedString.Key: Any] = [
         .font: NSFont.boldSystemFont(ofSize: 15)
     ]
-    private static let listItemParagraphStyle = {
+    private static let listItemParagraphStyle = { () -> NSMutableParagraphStyle in
         let style = NSMutableParagraphStyle()
         style.firstLineHeadIndent = 20
         return style

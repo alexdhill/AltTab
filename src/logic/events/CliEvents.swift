@@ -18,16 +18,32 @@ class CliEvents {
 
 fileprivate func handleEvent(_: CFMessagePort?, _: Int32, _ data: CFData?, _: UnsafeMutableRawPointer?) -> Unmanaged<CFData>? {
     Logger.debug()
-    if let data,
+    if let data = data,
        let message = String(data: data as Data, encoding: .utf8) {
         Logger.info(message)
         let output = CliServer.executeCommandAndSendReponse(message)
-        if let responseData = try? CliServer.jsonEncoder.encode(output) as CFData {
+        if let responseData = try? CliServer.jsonEncoder.encode(AnyEncodable(output)) as CFData {
             return Unmanaged.passRetained(responseData)
         }
     }
     Logger.error("Failed to decode message")
     return nil
+}
+
+extension Encodable {
+  fileprivate func encode(to container: inout SingleValueEncodingContainer) throws {
+    try container.encode(self)
+  }
+}
+struct AnyEncodable : Encodable {
+  var value: Encodable
+  init(_ value: Encodable) {
+    self.value = value
+  }
+  func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try value.encode(to: &container)
+  }
 }
 
 class CliServer {

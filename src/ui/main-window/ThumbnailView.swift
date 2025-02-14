@@ -80,7 +80,7 @@ class ThumbnailView: FlippedView {
     override func otherMouseUp(with event: NSEvent) {
         // middle-click
         if event.buttonNumber == 2 {
-            if let window_ {
+            if let window_ = window_ {
                 if window_.isWindowlessApp {
                     window_.application.quit()
                 } else {
@@ -140,7 +140,7 @@ class ThumbnailView: FlippedView {
     @discardableResult
     func updateDockLabelIcon(_ dockLabel: String?) -> Bool {
         assignIfDifferent(&dockLabelIcon.isHidden, dockLabel == nil || Preferences.hideAppBadges || Appearance.iconSize == 0)
-        if !dockLabelIcon.isHidden, let dockLabel {
+        if !dockLabelIcon.isHidden, let dockLabel = dockLabel {
             let view = dockLabelIcon.subviews[1] as! ThumbnailFontIconView
             let dockLabelInt = Int(dockLabel)
             if dockLabelInt == nil || dockLabelInt! > 30 {
@@ -258,7 +258,7 @@ class ThumbnailView: FlippedView {
         } else if isHovered {
             hoveredView?.label.isHidden = false
             focusedView.label.isHidden = true
-            if let hoveredView {
+            if let hoveredView = hoveredView {
                 updateAppIconsLabelFrame(hoveredView)
             }
         }
@@ -545,7 +545,7 @@ class ThumbnailView: FlippedView {
     }
 
     static func thumbnailSize(_ image: NSImage?, _ isWindowlessApp: Bool) -> NSSize {
-        guard let image else { return NSSize(width: 0, height: 0) }
+        guard let image = image else { return NSSize(width: 0, height: 0) }
         let thumbnailHeightMax = ThumbnailView.maxThumbnailHeight()
             - Appearance.edgeInsetsSize * 2
             - Appearance.intraCellPadding

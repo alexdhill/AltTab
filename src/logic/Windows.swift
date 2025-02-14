@@ -150,7 +150,7 @@ class Windows {
         if fromMouse && (newIndex != hoveredWindowIndex || lastWindowActivityType == .focus) {
             let oldIndex = hoveredWindowIndex
             hoveredWindowIndex = newIndex
-            if let oldIndex {
+            if let oldIndex = oldIndex {
                 ThumbnailsView.highlight(oldIndex)
             }
             index = hoveredWindowIndex
@@ -165,7 +165,7 @@ class Windows {
             index = focusedWindowIndex
             lastWindowActivityType = .focus
         }
-        guard let index else { return }
+        guard let index = index else { return }
         ThumbnailsView.highlight(index)
         let focusedView = ThumbnailsView.recycledViews[index]
         App.app.thumbnailsPanel.thumbnailsView.scrollView.contentView.scrollToVisible(focusedView.frame)

@@ -161,7 +161,7 @@ extension NSControl {
             return nil
         }
         set {
-            if let newValue {
+            if let newValue = newValue {
                 let selectorWrapper = SelectorWrapper<NSControl>(withClosure: newValue)
                 objc_setAssociatedObject(self, &handle, selectorWrapper, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                 action = selectorWrapper.selector
@@ -324,6 +324,6 @@ extension Optional {
 
     // useful call multiple statements that could fail, and have a unique do-catch block to handle failures
     func unwrapOrThrow() throws -> Wrapped {
-        if let self { return self } else { throw Error.unexpectedNil }
+        if let self = self { return self } else { throw Error.unexpectedNil }
     }
 }

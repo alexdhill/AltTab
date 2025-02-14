@@ -10,6 +10,8 @@ class AdditionalControlsSheet: SheetWindow {
             rightViews: [LabelAndControl.makeSwitch("mouseHoverEnabled")])
         let enableCursorFollowFocus = TableGroupView.Row(leftTitle: NSLocalizedString("Cursor follows focus", comment: ""),
             rightViews: [LabelAndControl.makeSwitch("cursorFollowFocusEnabled")])
+        let enableHideWindowsOnFocus = TableGroupView.Row(leftTitle: NSLocalizedString("Hide windows on focus", comment: ""),
+            rightViews: [LabelAndControl.makeSwitch("hideWindowsOnFocusEnabled")])
         ControlsTab.arrowKeysCheckbox = enableArrows.rightViews[0] as? Switch
         ControlsTab.vimKeysCheckbox = enableVimKeys.rightViews[0] as? Switch
         ControlsTab.arrowKeysEnabledCallback(ControlsTab.arrowKeysCheckbox)
@@ -22,6 +24,7 @@ class AdditionalControlsSheet: SheetWindow {
         let table2 = TableGroupView(title: NSLocalizedString("Miscellaneous", comment: ""),
             width: PreferencesWindow.width)
         _ = table2.addRow(enableCursorFollowFocus)
+        _ = table2.addRow(enableHideWindowsOnFocus)
         let view = TableGroupSetView(originalViews: [table1, table2], padding: 0)
         return view
     }

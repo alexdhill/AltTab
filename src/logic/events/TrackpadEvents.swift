@@ -12,7 +12,7 @@ class TrackpadEvents {
 
     static func toggle(_ enabled: Bool) {
         shouldBeEnabled = enabled
-        if let eventTap {
+        if let eventTap = eventTap {
             CGEvent.tapEnable(tap: eventTap, enable: enabled)
         }
     }
@@ -27,7 +27,7 @@ private func observe_() {
         eventsOfInterest: NSEvent.EventTypeMask.gesture.rawValue,
         callback: handleEvent,
         userInfo: nil)
-    if let eventTap {
+    if let eventTap = eventTap {
         let runLoopSource = CFMachPortCreateRunLoopSource(nil, eventTap, 0)
         CFRunLoopAddSource(BackgroundWork.keyboardEventsThread.runLoop, runLoopSource, .commonModes)
     } else {

@@ -17,7 +17,7 @@ enum Symbols: String {
 // Font icon using SF Symbols from the SF Pro font from Apple
 // see https://developer.apple.com/design/human-interface-guidelines/sf-symbols/overview/
 class ThumbnailFontIconView: ThumbnailTitleView {
-    static var paragraphStyle = {
+    static var paragraphStyle = { () -> NSMutableParagraphStyle in 
         let paragraphStyle = NSMutableParagraphStyle()
         // clip the top of the box since we know these symbols are always disks
         paragraphStyle.lineHeightMultiple = 0.85

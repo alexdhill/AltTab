@@ -281,12 +281,12 @@ class LabelAndControl: NSObject {
         }
         let label = makeLabel(labelText)
         if labelPosition == .right {
-            if let suffixText {
+            if let suffixText = suffixText {
                 return [control, label, makeSuffix(rawName, suffixText)]
             }
             return [control, label]
         }
-        if let suffixText {
+        if let suffixText = suffixText {
             return [label, control, makeSuffix(rawName, suffixText)]
         }
         return [label, control]
@@ -344,13 +344,13 @@ class LabelAndControl: NSObject {
         } else if control is NSSlider {
             return String(format: "%.0f", control.doubleValue) // we are only interested in decimals of the provided double
         } else if control is NSButton {
-            if let controlId {
+            if let controlId = controlId {
                 return ((control as! NSButton).state == NSButton.StateValue.on) ? controlId : nil
             } else {
                 return String((control as! NSButton).state == NSButton.StateValue.on)
             }
         } else if control is Switch {
-            if let controlId {
+            if let controlId = controlId {
                 return ((control as! Switch).state == NSButton.StateValue.on) ? controlId : nil
             } else {
                 return String((control as! Switch).state == NSButton.StateValue.on)

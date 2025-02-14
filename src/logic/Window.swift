@@ -87,10 +87,10 @@ class Window {
 
     private func observeEvents() {
         AXObserverCreate(application.pid, axObserverCallback, &axObserver)
-        guard let axObserver else { return }
+        guard let axObserver = axObserver else { return }
         for notification in Window.notifications {
             retryAxCallUntilTimeout { [weak self] in
-                guard let self else { return }
+                guard let self = self else { return }
                 try self.axUiElement.subscribeToNotification(axObserver, notification, nil)
             }
         }
@@ -121,7 +121,7 @@ class Window {
             return
         }
         BackgroundWork.accessibilityCommandsQueue.async { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             if self.isFullscreen {
                 self.axUiElement.setAttribute(kAXFullscreenAttribute, false)
             }
@@ -141,12 +141,12 @@ class Window {
             return
         }
         BackgroundWork.accessibilityCommandsQueue.async { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             if self.isFullscreen {
                 self.axUiElement.setAttribute(kAXFullscreenAttribute, false)
                 // minimizing is ignored if sent immediatly; we wait for the de-fullscreen animation to be over
                 BackgroundWork.accessibilityCommandsQueue.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
-                    guard let self else { return }
+                    guard let self = self else { return }
                     self.axUiElement.setAttribute(kAXMinimizedAttribute, true)
                 }
             } else {
@@ -161,7 +161,7 @@ class Window {
             return
         }
         BackgroundWork.accessibilityCommandsQueue.async { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             self.axUiElement.setAttribute(kAXFullscreenAttribute, !self.isFullscreen)
         }
     }
@@ -173,7 +173,7 @@ class Window {
             App.app.window(withWindowNumber: Int(cgWindowId!))?.makeKeyAndOrderFront(nil)
             Windows.previewFocusedWindowIfNeeded()
         } else if isWindowlessApp || cgWindowId == nil || Preferences.onlyShowApplications() {
-            if let bundleUrl, isWindowlessApp {
+            if let bundleUrl = bundleUrl, isWindowlessApp {
                 if (try? NSWorkspace.shared.launchApplication(at: bundleUrl, configuration: [:])) == nil {
                     application.runningApplication.activate(options: .activateAllWindows)
                 }
@@ -186,7 +186,7 @@ class Window {
             // but quickly switches back to another window in that space
             // You can reproduce this buggy behaviour by clicking on the dock icon, proving it's an OS bug
             BackgroundWork.accessibilityCommandsQueue.async { [weak self] in
-                guard let self else { return }
+                guard let self = self else { return }
                 var psn = ProcessSerialNumber()
                 GetProcessForPID(self.application.pid, &psn)
                 _SLPSSetFrontProcessWithOptions(&psn, self.cgWindowId!, SLPSMode.userGenerated.rawValue)
@@ -196,6 +196,16 @@ class Window {
                     Windows.previewFocusedWindowIfNeeded()
                 }
             }
+        }
+    }
+    
+    func hide() {
+        let bundleUrl = application.bundleURL
+        if bundleUrl == App.bundleURL {
+            App.shared.activate(ignoringOtherApps: true)
+            App.app.window(withWindowNumber: Int(cgWindowId!))?.makeKeyAndOrderFront(nil)
+        } else {
+            application.runningApplication.hide()
         }
     }
 
@@ -223,10 +233,10 @@ class Window {
 
     // for some windows (e.g. Slack), the AX API doesn't return a title; we try CG API; finally we resort to the app name
     func bestEffortTitle(_ axTitle: String?) -> String {
-        if let axTitle, !axTitle.isEmpty {
+        if let axTitle = axTitle, !axTitle.isEmpty {
             return axTitle
         }
-        if let cgWindowId, let cgTitle = cgWindowId.title(), !cgTitle.isEmpty {
+        if let cgWindowId = cgWindowId, let cgTitle = cgWindowId.title(), !cgTitle.isEmpty {
             return cgTitle
         }
         return application.localizedName ?? ""
